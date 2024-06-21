@@ -1,0 +1,22 @@
+cd todo-app/todo-backend
+npm install
+npm start
+
+# Verificar que la aplicación funcione en http://localhost:3000
+
+# Crear Dockerfile
+echo 'FROM node:14
+WORKDIR /usr/src/app
+COPY package*.json ./
+RUN npm install
+COPY . .
+EXPOSE 3000
+CMD ["npm", "start"]' > Dockerfile
+
+# Construir la imagen Docker
+docker build -t todo-backend .
+
+# Ejecutar el contenedor Docker
+docker run -p 3000:3000 todo-backend
+
+# Verificar que la aplicación funcione en http://localhost:3000
