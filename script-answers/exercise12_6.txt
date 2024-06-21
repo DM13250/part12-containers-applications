@@ -1,0 +1,19 @@
+cd todo-app/todo-backend
+
+# Crear docker-compose.yml
+touch docker-compose.yml
+nano docker-compose.yml
+
+# Contenido del docker-compose.yml:
+# version: '3.8'
+#
+# services:
+#   todo-backend:
+#     build: .
+#     ports:
+#       - "3000:3000"
+
+# Construir y ejecutar los contenedores
+docker-compose up --build
+
+# Verificar que la aplicación funcione en http://localhost:3000
