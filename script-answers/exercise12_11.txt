@@ -1,0 +1,23 @@
+# Uso de redis-cli para acceder y manipular datos en Redis
+
+1. Acceder al contenedor de Redis y abrir redis-cli:
+   docker exec -it todo-backend_redis_1 redis-cli
+
+2. Operaciones con redis-cli:
+   - Listar todas las claves:
+     KEYS *
+
+   - Obtener el valor de una clave específica (ejemplo, added_todos):
+     GET added_todos
+
+   - Establecer el valor de una clave (ejemplo, establecer en 9001):
+     SET added_todos 9001
+
+3. Verificación desde la aplicación:
+   - Asegurarse de que el nuevo valor funcione actualizando la página http://localhost:3000/statistics.
+   - Crear una nueva tarea con Postman y verificar que el contador se incremente correctamente.
+
+4. Eliminar la clave desde redis-cli:
+   DEL added_todos
+
+   Asegurarse de que el contador funcione correctamente cuando se agreguen nuevas tareas.
