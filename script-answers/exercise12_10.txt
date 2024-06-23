@@ -1,0 +1,42 @@
+# Modificar el archivo routes/index.js para implementar un contador de tareas pendientes y estadísticas
+
+1. Agregar middleware para incrementar el contador de tareas pendientes en Redis cada vez que se envía una solicitud para agregar una tarea pendiente.
+2. Implementar un endpoint GET /statistics para obtener las estadísticas de uso.
+
+# Contenido del archivo routes/index.js
+const express = require('express');
+const router = express.Router();
+const redis = require('../redis');
+const configs = require('../util/config');
+
+let addedTodos = 0;
+
+router.use('/todos', async (req, res, next) => {
+  try {
+    await redis.incrAsync('added_todos');
+    addedTodos++;
+    next();
+  } catch (error) {
+    console.error('Error incrementing added_todos in Redis:', error);
+    next(error);
+  }
+});
+
+router.get('/statistics', async (req, res, next) => {
+  try {
+    const addedTodosCount = await redis.getAsync('added_todos');
+    res.json({
+      added_todos: parseInt(addedTodosCount) || 0
+    });
+  } catch (error) {
+    console.error('Error retrieving added_todos from Redis:', error);
+    res.status(500).json({ error: 'Failed to retrieve statistics' });
+  }
+});
+
+router.post('/todos', async (req, res) => {
+  // Aquí iría la lógica para agregar una tarea pendiente
+  res.status(200).json({ message: 'Todo added successfully' });
+});
+
+module.exports = router;
