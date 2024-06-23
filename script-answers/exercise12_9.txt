@@ -1,0 +1,64 @@
+# Navegar al directorio del proyecto
+cd C:\Users\ADMIN\Desktop\FullStackOpen\part12\part12-containers-applications\todo-app\todo-backend
+
+# Crear o editar el archivo docker-compose.dev.yml
+version: '3.8'
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - "3456:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+      - mongo-data:/data/db
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+
+volumes:
+  mongo-data:
+  redis-data:
+
+# Iniciar los servicios de Docker Compose
+docker-compose -f docker-compose.dev.yml up -d
+
+# Establecer variables de entorno y ejecutar el servidor
+$env:REDIS_URL="redis://localhost:6379"
+$env:MONGO_URL="mongodb://root:example@localhost:3456/the_database"
+npm run dev
+
+# Modificar el archivo routes/index.js para utilizar Redis
+const express = require('express');
+const router = express.Router();
+const redis = require('../redis'); // Añade esta línea para importar Redis
+
+const configs = require('../util/config');
+
+let visits = 0;
+
+router.get('/', async (req, res) => {
+  visits++;
+
+  redis.incr('visits', (err, reply) => {
+    if (err) {
+      console.error('Error incrementing visits in Redis:', err);
+    } else {
+      visits = reply;
+    }
+
+    res.send({
+      ...configs,
+      visits
+    });
+  });
+});
+
+module.exports = router;
