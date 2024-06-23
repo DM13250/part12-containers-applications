@@ -1,0 +1,66 @@
+# Iniciar el contenedor de MongoDB
+cd path/to/todo-app
+docker-compose up -d
+
+# Ingresar al contenedor
+docker ps
+docker exec -it <container_name_or_id> bash
+
+# Abrir Mongo CLI
+mongosh -u root -p example
+
+# Mostrar las bases de datos
+show dbs
+# Resultado:
+# admin         0.000GB
+# config         0.000GB
+# local         0.000GB
+# the_database  0.000GB
+
+# Usar la base de datos correcta
+use the_database
+
+# Mostrar las colecciones
+show collections
+# Resultado:
+# todos
+
+# Consultar los datos en la colección todos
+db.todos.find({})
+# Resultado esperado (por ejemplo):
+# [
+#   {
+#     _id: ObjectId("633c270ba211aa5f7931f078"),
+#     text: 'Write code',
+#     done: false
+#   },
+#   {
+#     _id: ObjectId("633c270ba211aa5f7931f079"),
+#     text: 'Learn about containers',
+#     done: false
+#   }
+# ]
+
+# Insertar una nueva tarea
+db.todos.insertOne({ text: 'Increase the number of tools in my tool belt', done: false })
+
+# Verificar la nueva tarea
+db.todos.find({})
+# Resultado esperado:
+# [
+#   {
+#     _id: ObjectId("633c270ba211aa5f7931f078"),
+#     text: 'Write code',
+#     done: false
+#   },
+#   {
+#     _id: ObjectId("633c270ba211aa5f7931f079"),
+#     text: 'Learn about containers',
+#     done: false
+#   },
+#   {
+#     _id: ObjectId("newly_generated_object_id"),
+#     text: 'Increase the number of tools in my tool belt',
+#     done: false
+#   }
+# ]

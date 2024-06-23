@@ -1,0 +1,82 @@
+# Crear docker-compose.yml para MongoDB en el directorio todo-app
+cd todo-app
+touch docker-compose.yml
+nano docker-compose.yml
+
+# Contenido del docker-compose.yml:
+# version: '3.8'
+# services:
+#   mongodb:
+#     image: mongo:latest
+#     container_name: mongodb
+#     ports:
+#       - "27017:27017"
+#     volumes:
+#       - mongo-data:/data/db
+# volumes:
+#   mongo-data:
+
+# Iniciar MongoDB usando Docker Compose
+docker-compose up -d
+
+# Navegar al directorio del backend
+cd todo-app/todo-backend
+
+# Instalar las dependencias de MongoDB
+npm install mongoose
+
+# Configurar el backend para usar MongoDB y añadir las rutas para GET /todos/:id y PUT /todos/:id
+nano index.js
+
+# Contenido de index.js:
+# const mongoose = require('mongoose');
+# const express = require('express');
+# const bodyParser = require('body-parser');
+# const app = express();
+#
+# app.use(bodyParser.json());
+#
+# mongoose.connect('mongodb://localhost:27017/todo-app', {
+#   useNewUrlParser: true,
+#   useUnifiedTopology: true
+# });
+#
+# const Todo = mongoose.model('Todo', new mongoose.Schema({
+#   title: String,
+#   completed: Boolean
+# }));
+#
+# app.get('/todos/:id', async (req, res) => {
+#   try {
+#     const todo = await Todo.findById(req.params.id);
+#     if (!todo) {
+#       return res.status(404).send('Todo not found');
+#     }
+#     res.send(todo);
+#   } catch (error) {
+#     res.status(500).send(error);
+#   }
+# });
+#
+# app.put('/todos/:id', async (req, res) => {
+#   try {
+#     const todo = await Todo.findByIdAndUpdate(req.params.id, req.body, { new: true });
+#     if (!todo) {
+#       return res.status(404).send('Todo not found');
+#     }
+#     res.send(todo);
+#   } catch (error) {
+#     res.status(500).send(error);
+#   }
+# });
+#
+# app.listen(3000, () => {
+#   console.log('Server is running on port 3000');
+# });
+
+# Iniciar el backend
+npm start
+
+# Probar las nuevas rutas
+curl -X GET http://localhost:3000/todos/{id}
+curl -X PUT -H "Content-Type: application/json" -d '{"title": "New Title", "completed": true}' http://localhost:3000/todos/{id}
